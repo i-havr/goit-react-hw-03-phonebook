@@ -12,6 +12,18 @@ export class App extends React.Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    parsedContacts && this.setState({ contacts: parsedContacts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.state.todos !== prevState.contacts &&
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  }
+
   addContact = ({ name, number }, resetForm) => {
     const newContact = { id: nanoid(5), name, number };
 
@@ -43,18 +55,6 @@ export class App extends React.Component {
       contacts: contacts.filter(({ id }) => id !== contactId),
     }));
   };
-
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-
-    parsedContacts && this.setState({ contacts: parsedContacts });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.state.todos !== prevState.contacts &&
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
 
   render() {
     const { filter } = this.state;
